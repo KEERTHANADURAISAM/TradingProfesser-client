@@ -482,7 +482,7 @@ const renderNameWithHighlightedFree = (name) => {
 
             {/* Enrollment Button */}
             <button
-              onClick={handleEnroll}
+              onClick={() => handleEnroll(allPhasesPackageFree)}
               className="mt-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 w-full sm:w-auto flex items-center justify-center gap-2 group"
             >
               <span>Student Enroll Phase</span>
