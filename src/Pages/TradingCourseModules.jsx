@@ -171,9 +171,9 @@ const handleEnroll = (course) => {
     subtitle: "Master the art of professional trading with our comprehensive course",
     price: "₹18,999",
     originalPrice: "₹18,999",
-    duration: "3 Days Online",
+    duration: "1 Month Online Classes",
     sessions: "2.5 Hours/Day",
-    level: "Beginner to Intermediate",
+    level: "Beginner to Pro",
     color: "from-blue-500 to-purple-600",
     bgColor: "bg-gradient-to-br from-blue-500/10 to-purple-600/10",
     borderColor: "border-blue-500/30",
@@ -196,7 +196,7 @@ const handleEnroll = (course) => {
     ],
     features: [
       "1 Month Premium TP Group Access",
-      "Live sessions - 3 DAYS",
+      "Live sessions - 1 MONTH",
       "Advanced Trend Analysis Software Paid Version",
       "Free Combination Website Paid Version",
     ]
@@ -204,27 +204,16 @@ const handleEnroll = (course) => {
 
 
   // Function to extract and highlight "Free" from the name
-  const renderNameWithHighlightedFree = (name) => {
-    const words = name.split(' ');
-    const freeIndex = words.findIndex(word => word.toLowerCase() === 'free');
-    
-    if (freeIndex === -1) return name;
-    
-    const beforeFree = words.slice(0, freeIndex).join(' ');
-    const freeWord = words[freeIndex];
-    const afterFree = words.slice(freeIndex + 1).join(' ');
-    
+const renderNameWithHighlightedFree = (name) => {
     return (
-      <>
-        {beforeFree && <span>{beforeFree} </span>}
-        <span className="block sm:inline-block sm:ml-2 text-3xl sm:text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-500 to-purple-600 mt-1 sm:mt-0">
-          {freeWord.toUpperCase()}
-        </span>
-        {afterFree && <span className="block sm:inline"> {afterFree}</span>}
-      </>
+      <span>
+        <span className="bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
+          Beginner to Pro
+        </span>{' '}
+        Trader
+      </span>
     );
   };
-
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-900 to-blue-900 py-12 px-4 mt-8">
@@ -613,8 +602,8 @@ const handleEnroll = (course) => {
               </div> 
             </div>         
             <div className="flex flex-col items-center space-y-2 text-gray-300">   
-              <p><strong>Dates:</strong>   OCTOBER - 27, 28, 29</p>   
-              <p><strong>Duration:</strong> 3 Days</p>   
+              <p><strong>Dates:</strong>   OCTOBER - 27, 28, 29,30</p>   
+              <p><strong>Duration:</strong> 4 Days</p>   
               <p><strong>Timing:</strong> 2.5 Hours per Day</p>   
               <p><strong>Mode:</strong> Live Online Sessions</p> 
             </div>        
