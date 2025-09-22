@@ -402,7 +402,7 @@ const TradingRegistrationForm = () => {
         }
       }
 
-      const response = await fetch('http://localhost:5000/api/registration/register', {
+      const response = await fetch('https://tradingprofesser-server-deploy.onrender.com/api/registration/register', {
         method: 'POST',
         body: formDataToSend,
         // Don't set Content-Type header - let browser set it with boundary

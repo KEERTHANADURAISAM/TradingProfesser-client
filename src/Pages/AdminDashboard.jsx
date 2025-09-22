@@ -44,7 +44,8 @@ const AdminDashboard = () => {
   const [copyTradingCurrentPage, setCopyTradingCurrentPage] = useState(1);
 
   // API Base URL
-  const API_BASE_URL = 'http://localhost:5000/';
+  // const API_BASE_URL = 'http://localhost:5000/';
+  const API_BASE_URL ="https://tradingprofesser-server-deploy.onrender.com/"
 
   // Show notification
   const showNotification = (message, type = 'success') => {
@@ -223,57 +224,33 @@ const AdminDashboard = () => {
   };
 
   // Delete registration
-  const deleteRegistration = async (registrationId) => {
-    if (!window.confirm('Are you sure you want to delete this registration?')) {
-      return;
+ const deleteRegistration = async (registrationId) => {
+  if (!window.confirm('Are you sure you want to delete this registration?')) {
+    return;
+  }
+
+  try {
+    // Fixed URL - removed 'registration' from the path
+    const response = await fetch(`${API_BASE_URL}api/${registrationId}`, {
+      method: 'DELETE',
+    });
+
+    if (!response.ok) {
+      throw new Error('Failed to delete registration');
     }
 
-    try {
-      const response = await fetch(`${API_BASE_URL}api/registration/${registrationId}`, {
-        method: 'DELETE',
-      });
+    setRegistrations(prev =>
+      prev.filter(reg => (reg.id || reg._id) !== registrationId)
+    );
 
-      if (!response.ok) {
-        throw new Error('Failed to delete registration');
-      }
+    showNotification('Registration deleted successfully');
+  } catch (err) {
+    console.error('Failed to delete registration:', err);
+    showNotification('Failed to delete registration', 'error');
+  }
+};
 
-      setRegistrations(prev => 
-        prev.filter(reg => (reg.id || reg._id) !== registrationId)
-      );
-      
-      showNotification('Registration deleted successfully');
-    } catch (err) {
-      console.error('Failed to delete registration:', err);
-      showNotification('Failed to delete registration', 'error');
-    }
-  };
-
-  // Delete copy trading application - FIXED API ENDPOINT
-  const deleteCopyTradingApplication = async (applicationId) => {
-    if (!window.confirm('Are you sure you want to delete this copy trading application?')) {
-      return;
-    }
-
-    try {
-      // Fixed: Using correct endpoint that matches your routes
-      const response = await fetch(`${API_BASE_URL}api/trading-form/applications/${applicationId}`, {
-        method: 'DELETE',
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to delete copy trading application');
-      }
-
-      setCopyTradingApplications(prev => 
-        prev.filter(app => (app.id || app._id) !== applicationId)
-      );
-      
-      showNotification('Copy trading application deleted successfully');
-    } catch (err) {
-      console.error('Failed to delete copy trading application:', err);
-      showNotification('Failed to delete copy trading application', 'error');
-    }
-  };
+ 
 
 // Download file function - FIXED URL
 const handleDownloadFile = async (itemId, fileType, fileName, isFromCopyTrading = false) => {
