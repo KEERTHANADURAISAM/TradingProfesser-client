@@ -419,8 +419,8 @@ const renderNameWithHighlightedFree = (name) => {
 </div> */}
 
 {/* Free Package */}
- <div className="mb-12 bg-gray-900 p-8">
-      <div className="bg-gradient-to-br from-blue-500/10 to-purple-600/10 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-4 sm:p-6 lg:p-8 relative overflow-hidden max-w-6xl mx-auto">
+ <div className="mb-12 bg-gray-900 p-2 sm:p-4 lg:p-8">
+      <div className="bg-gradient-to-br from-blue-500/10 to-purple-600/10 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-3 sm:p-6 lg:p-8 relative overflow-hidden max-w-6xl mx-auto">
         
         {/* Badge */}
         <div className="absolute top-2 right-2 sm:top-4 sm:right-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white px-2 py-1 sm:px-4 sm:py-1 rounded-full text-xs sm:text-sm font-semibold text-center">
@@ -429,21 +429,21 @@ const renderNameWithHighlightedFree = (name) => {
         </div>
 
         {/* Main Grid Layout */}
-        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8 items-start mt-8 sm:mt-4 lg:mt-0">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6 lg:gap-8 items-start mt-6 sm:mt-4 lg:mt-0">
           
           {/* Left Side - Header + Topics */}
           <div>
             {/* Header Section */}
-            <h3 className="text-2xl sm:text-3xl font-bold text-white mb-2">
+            <h3 className="text-xl sm:text-2xl lg:text-3xl font-bold text-white mb-2 leading-tight">
               {renderNameWithHighlightedFree(allPhasesPackageFree.name)}
             </h3>
-            <p className="text-blue-300 text-base sm:text-lg mb-4">{allPhasesPackageFree.subtitle}</p>
+            <p className="text-blue-300 text-sm sm:text-base lg:text-lg mb-4">{allPhasesPackageFree.subtitle}</p>
 
-            <div className="flex flex-col sm:flex-row sm:items-baseline sm:space-x-4 mb-6 gap-2 sm:gap-0">
-              <span className="text-xl font-bold text-white">{allPhasesPackageFree.price}</span>
+            <div className="flex flex-col sm:flex-row sm:items-baseline sm:space-x-4 mb-4 sm:mb-6 gap-2 sm:gap-0">
+              <span className="text-lg sm:text-xl font-bold text-white">{allPhasesPackageFree.price}</span>
             </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-gray-300 mb-8">
+            <div className="grid grid-cols-1 gap-2 sm:gap-4 text-xs sm:text-sm text-gray-300 mb-6 sm:mb-8">
               <div className="flex items-center space-x-2">
                 <svg className="w-4 h-4 flex-shrink-0 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10"/>
@@ -455,24 +455,24 @@ const renderNameWithHighlightedFree = (name) => {
             </div>
 
             {/* Course Topics */}
-            <div className="mb-6">
-              <h4 className="text-lg font-semibold text-blue-300 mb-4 flex items-center">
+            <div className="mb-4 sm:mb-6">
+              <h4 className="text-base sm:text-lg font-semibold text-blue-300 mb-3 sm:mb-4 flex items-center">
                 <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/>
                   <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>
                 </svg>
                 Course Topics
               </h4>
-              <div className="space-y-3 max-h-80 overflow-y-auto pr-2">
+              <div className="space-y-2 sm:space-y-3 max-h-60 sm:max-h-80 overflow-y-auto pr-1 sm:pr-2">
                 {allPhasesPackageFree.topics.map((topic, index) => (
                   <div 
                     key={index} 
-                    className="group flex items-center space-x-3 p-3 rounded-lg bg-slate-800/30 border-l-4 border-blue-400 hover:border-purple-400 transition-all duration-300 hover:translate-x-2 hover:bg-gradient-to-r hover:from-blue-500/15 hover:to-purple-500/10"
+                    className="group flex items-center space-x-2 sm:space-x-3 p-2 sm:p-3 rounded-lg bg-slate-800/30 border-l-3 sm:border-l-4 border-blue-400 hover:border-purple-400 transition-all duration-300 hover:translate-x-1 sm:hover:translate-x-2 hover:bg-gradient-to-r hover:from-blue-500/15 hover:to-purple-500/10"
                   >
                     <div className={`w-2 h-2 rounded-full flex-shrink-0 ${
                       index % 2 === 0 ? 'bg-blue-400' : 'bg-purple-400'
                     }`}></div>
-                    <span className="text-gray-300 text-sm sm:text-base group-hover:text-white transition-colors">
+                    <span className="text-gray-300 text-xs sm:text-sm lg:text-base group-hover:text-white transition-colors leading-tight">
                       {topic}
                     </span>
                   </div>
@@ -482,7 +482,7 @@ const renderNameWithHighlightedFree = (name) => {
 
             {/* Enrollment Button */}
             <button
-               onClick={() => handleEnroll(allPhasesPackageFree)}
+              onClick={handleEnroll}
               className="mt-8 bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white px-6 sm:px-8 py-3 sm:py-4 rounded-xl font-semibold text-base sm:text-lg transition-all duration-300 transform hover:scale-105 w-full sm:w-auto flex items-center justify-center gap-2 group"
             >
               <span>Student Enroll Phase</span>
@@ -494,63 +494,63 @@ const renderNameWithHighlightedFree = (name) => {
           </div>
 
           {/* Right Side - Features */}
-          <div className="space-y-3 mt-6 lg:mt-0">
-            <h4 className="text-lg font-semibold text-purple-300 mb-6 flex items-center">
+          <div className="space-y-3 mt-4 sm:mt-6 lg:mt-0">
+            <h4 className="text-base sm:text-lg font-semibold text-purple-300 mb-4 sm:mb-6 flex items-center">
               <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <polygon points="12,2 15.09,8.26 22,9.27 17,14.14 18.18,21.02 12,17.77 5.82,21.02 7,14.14 2,9.27 8.91,8.26"/>
               </svg>
               What You Get
             </h4>
             
-            <div className="space-y-4">
-              <div className="group flex items-start space-x-4 p-5 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/5 border border-green-500/20 hover:border-green-400/40 transition-all duration-300 hover:-translate-y-1">
-                <svg className="w-6 h-6 text-green-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="space-y-3 sm:space-y-4">
+              <div className="group flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-xl bg-gradient-to-r from-green-500/10 to-emerald-500/5 border border-green-500/20 hover:border-green-400/40 transition-all duration-300 hover:-translate-y-1">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-green-400 flex-shrink-0 mt-0.5 sm:mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
                   <circle cx="9" cy="7" r="4"/>
                   <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
                   <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
                 </svg>
                 <div>
-                  <span className="text-white font-medium text-sm sm:text-base block mb-1">
+                  <span className="text-white font-medium text-xs sm:text-sm lg:text-base block mb-1">
                     1 Month Premium TP Group Access
                   </span>
                   <span className="text-gray-400 text-xs">Exclusive trading community</span>
                 </div>
               </div>
               
-              <div className="group flex items-start space-x-4 p-5 rounded-xl bg-gradient-to-r from-blue-500/10 to-cyan-500/5 border border-blue-500/20 hover:border-blue-400/40 transition-all duration-300 hover:-translate-y-1">
-                <svg className="w-6 h-6 text-blue-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="group flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-xl bg-gradient-to-r from-blue-500/10 to-cyan-500/5 border border-blue-500/20 hover:border-blue-400/40 transition-all duration-300 hover:-translate-y-1">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-blue-400 flex-shrink-0 mt-0.5 sm:mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <polygon points="23 7 16 12 23 17 23 7"/>
                   <rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
                 </svg>
                 <div>
-                  <span className="text-white font-medium text-sm sm:text-base block mb-1">
-                    Live sessions - 3 DAYS
+                  <span className="text-white font-medium text-xs sm:text-sm lg:text-base block mb-1">
+                    Live sessions - 1 Month
                   </span>
                   <span className="text-gray-400 text-xs">Interactive learning experience</span>
                 </div>
               </div>
               
-              <div className="group flex items-start space-x-4 p-5 rounded-xl bg-gradient-to-r from-purple-500/10 to-violet-500/5 border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:-translate-y-1">
-                <svg className="w-6 h-6 text-purple-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="group flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-xl bg-gradient-to-r from-purple-500/10 to-violet-500/5 border border-purple-500/20 hover:border-purple-400/40 transition-all duration-300 hover:-translate-y-1">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-purple-400 flex-shrink-0 mt-0.5 sm:mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
                 </svg>
                 <div>
-                  <span className="text-white font-medium text-sm sm:text-base block mb-1">
+                  <span className="text-white font-medium text-xs sm:text-sm lg:text-base block mb-1">
                     Advanced Trend Analysis Software Paid Version
                   </span>
                   <span className="text-gray-400 text-xs">Professional trading tools</span>
                 </div>
               </div>
               
-              <div className="group flex items-start space-x-4 p-5 rounded-xl bg-gradient-to-r from-pink-500/10 to-rose-500/5 border border-pink-500/20 hover:border-pink-400/40 transition-all duration-300 hover:-translate-y-1">
-                <svg className="w-6 h-6 text-pink-400 flex-shrink-0 mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="group flex items-start space-x-3 sm:space-x-4 p-3 sm:p-5 rounded-xl bg-gradient-to-r from-pink-500/10 to-rose-500/5 border border-pink-500/20 hover:border-pink-400/40 transition-all duration-300 hover:-translate-y-1">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-pink-400 flex-shrink-0 mt-0.5 sm:mt-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <circle cx="12" cy="12" r="10"/>
                   <line x1="2" y1="12" x2="22" y2="12"/>
                   <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/>
                 </svg>
                 <div>
-                  <span className="text-white font-medium text-sm sm:text-base block mb-1">
+                  <span className="text-white font-medium text-xs sm:text-sm lg:text-base block mb-1">
                     Free Combination Website Paid Version
                   </span>
                   <span className="text-gray-400 text-xs">Premium website access</span>
@@ -559,8 +559,8 @@ const renderNameWithHighlightedFree = (name) => {
             </div>
 
             {/* Trust Indicators */}
-            <div className="mt-8 p-4 bg-slate-800/30 rounded-lg border border-slate-600/30">
-              <div className="flex items-center justify-center gap-6 text-gray-300 text-sm">
+            <div className="mt-6 sm:mt-8 p-3 sm:p-4 bg-slate-800/30 rounded-lg border border-slate-600/30">
+              <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-6 text-gray-300 text-xs sm:text-sm">
                 <div className="flex items-center gap-2">
                   <svg className="w-4 h-4 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path d="M9 12l2 2 4-4"/>
