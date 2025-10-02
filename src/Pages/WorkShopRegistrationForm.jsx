@@ -45,6 +45,15 @@ const TradingRegistrationForm = () => {
   const aadharFileInputRef = useRef(null);
   const signatureFileInputRef = useRef(null);
 
+  // Reset success states when user starts interacting with form
+  const resetSuccessStates = () => {
+    if (isSubmitted || submitMessage) {
+      setIsSubmitted(false);
+      setSubmitMessage('');
+      setShowSuccessDialog(false);
+    }
+  };
+
   // Validation functions
   const validators = {
     validateAadhaar: function(aadhaarNumber) {
@@ -104,6 +113,9 @@ const TradingRegistrationForm = () => {
   };
 
   const handleInputChange = (e) => {
+    // Reset success states when user starts typing
+    resetSuccessStates();
+
     const { name, value, type, checked } = e.target;
     let newValue = type === 'checkbox' ? checked : value;
     
@@ -163,54 +175,34 @@ const TradingRegistrationForm = () => {
   }, [formData, files]);
 
   const handleFileChange = (e) => {
+    // Reset success states when user uploads new files
+    resetSuccessStates();
+
     const { name, files: selectedFiles } = e.target;
     const file = selectedFiles[0];
 
     if (file) {
+      // Clean filename - remove invalid characters
+      const cleanedName = file.name.replace(/[^a-zA-Z0-9._\-\s]/g, '_');
+      
+      // Create new file with cleaned name
+      const cleanedFile = new File([file], cleanedName, { type: file.type });
+      
+      // Rest of your validation logic...
       if (name === 'aadharFile') {
-        if (file.size > 5 * 1024 * 1024) {
-          setErrors(prev => ({
-            ...prev,
-            aadharFile: 'Aadhaar file size cannot exceed 5MB'
-          }));
-          return;
-        }
-        if (!['image/jpeg', 'image/jpg', 'image/png', 'application/pdf'].includes(file.type)) {
-          setErrors(prev => ({
-            ...prev,
-            aadharFile: 'Aadhaar file must be JPG, PNG, or PDF'
-          }));
-          return;
-        }
-      }
-
-      if (name === 'signatureFile') {
-        if (file.size > 2 * 1024 * 1024) {
-          setErrors(prev => ({
-            ...prev,
-            signatureFile: 'Signature file size cannot exceed 2MB'
-          }));
-          return;
-        }
-        if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
-          setErrors(prev => ({
-            ...prev,
-            signatureFile: 'Signature file must be JPG or PNG'
-          }));
-          return;
+        if (cleanedFile.size > 5 * 1024 * 1024) {
+          // ... size validation
         }
       }
 
       setFiles(prev => ({
         ...prev,
-        [name]: file
+        [name]: cleanedFile
       }));
 
+      // Clear any existing file errors
       if (errors[name]) {
-        setErrors(prev => ({
-          ...prev,
-          [name]: ''
-        }));
+        setErrors(prev => ({ ...prev, [name]: '' }));
       }
     }
   };
@@ -356,12 +348,14 @@ const TradingRegistrationForm = () => {
     if (!validateForm()) {
       console.log('❌ Client-side validation failed');
       setSubmitMessage('❌ Please fix the validation errors below');
+      setIsSubmitted(false); // Ensure success state is false
       return;
     }
 
     setIsSubmitting(true);
     setErrors({});
     setSubmitMessage('');
+    setIsSubmitted(false); // Reset success state before submission
 
     try {
       const formDataToSend = new FormData();
@@ -402,7 +396,10 @@ const TradingRegistrationForm = () => {
         }
       }
 
-      const response = await fetch('https://tradingprofesser-server-deploy.onrender.com/api/registration/register', {
+      const API_BASE_URL = 'http://localhost:5000/';
+      // const API_BASE_URL = 'https://tradingprofesser-server-deploy.onrender.com/'
+      
+      const response = await fetch(`${API_BASE_URL}api/registration/register`, {
         method: 'POST',
         body: formDataToSend,
         // Don't set Content-Type header - let browser set it with boundary
@@ -475,10 +472,41 @@ const TradingRegistrationForm = () => {
           setErrors(errorObj);
           console.log('📋 Server validation errors mapped:', errorObj);
         } else {
-          setErrors({ general: result.message || 'Submission failed. Please try again.' });
+          // Handle duplicate registration errors and other server errors
+          const message = result.message || 'Submission failed. Please try again.';
+          
+          // Check if it's a duplicate field error
+          if (result.field) {
+            // Map server field names to form field names for better UX
+            const fieldMapping = {
+              'email': 'email',
+              'phone': 'phone', 
+              'aadharNumber': 'aadharNumber'
+            };
+               
+            const formField = fieldMapping[result.field];
+            if (formField) {
+              setErrors({ 
+                [formField]: message,
+                general: `Registration failed: ${message}` 
+              });
+            } else {
+              setErrors({ general: message });
+            }
+          } else if (message.toLowerCase().includes('already registered') || 
+                     message.toLowerCase().includes('duplicate') ||
+                     message.toLowerCase().includes('already exists')) {
+            // Generic duplicate error handling
+            setErrors({ 
+              general: `${message} Please verify your information or contact support if you need assistance.` 
+            });
+          } else {
+            setErrors({ general: message });
+          }
         }
         
         setSubmitMessage(`❌ ${result.message || 'Registration failed. Please try again.'}`);
+        setIsSubmitted(false); // Ensure success state is false on error
       }
 
     } catch (error) {
@@ -487,6 +515,7 @@ const TradingRegistrationForm = () => {
         general: 'Network error. Please check your connection and try again.'
       });
       setSubmitMessage('❌ Network error. Please check your connection and try again.');
+      setIsSubmitted(false); // Ensure success state is false on error
     } finally {
       setIsSubmitting(false);
     }

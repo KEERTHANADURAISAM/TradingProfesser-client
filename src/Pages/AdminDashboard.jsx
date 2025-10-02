@@ -11,8 +11,6 @@ import Notification from './Notification';
 import OverviewTab from './OverviewTab';
 import RegistrationsTab from './RegistrationsTab';
 import CoursesTab from './CoursesTab';
-// import PaymentsTab from './PaymentsTab';
-// import CopyTradingTab from './CopyTradingTab';
 
 // Main Admin Dashboard Component
 const AdminDashboard = () => {
@@ -44,8 +42,7 @@ const AdminDashboard = () => {
   const [copyTradingCurrentPage, setCopyTradingCurrentPage] = useState(1);
 
   // API Base URL
-  // const API_BASE_URL = 'http://localhost:5000/';
-  const API_BASE_URL ="https://tradingprofesser-server-deploy.onrender.com/"
+  const API_BASE_URL = 'http://localhost:5000/';
 
   // Show notification
   const showNotification = (message, type = 'success') => {
@@ -53,7 +50,7 @@ const AdminDashboard = () => {
     setTimeout(() => setNotification(null), 3000);
   };
 
-  // Fetch registrations
+  // Fetch registrations - FIXED
   const fetchRegistrations = async () => {
     setLoading(true);
     try {
@@ -93,66 +90,11 @@ const AdminDashboard = () => {
     }
   };
 
-  // Fetch copy trading applications - FIXED API ENDPOINT
-  // const fetchCopyTradingApplications = async () => {
-  //   try {
-  //     // Fixed: Using correct endpoint that matches your form and routes
-  //     console.log('Fetching copy trading applications from API:', `${API_BASE_URL}api/trading-form/applications/all`);
-      
-  //     const response = await fetch(`${API_BASE_URL}api/trading-form/applications/all`);
-  //     if (!response.ok) {
-  //       throw new Error(`HTTP error! status: ${response.status}`);
-  //     }
-  //     const data = await response.json();
-      
-  //     console.log('Copy Trading API Response:', data);
-      
-  //     // Handle different possible response structures
-  //     let applicationData = [];
-  //     if (data.applications && Array.isArray(data.applications)) {
-  //       applicationData = data.applications;
-  //     } else if (Array.isArray(data)) {
-  //       applicationData = data;
-  //     } else if (data.data && Array.isArray(data.data)) {
-  //       applicationData = data.data;
-  //     } else if (data.data && data.data.applications && Array.isArray(data.data.applications)) {
-  //       applicationData = data.data.applications;
-  //     }
-      
-  //     console.log('Processed Copy Trading Data:', applicationData);
-      
-  //     setCopyTradingApplications(applicationData);
-  //   } catch (err) {
-  //     console.error('Failed to fetch copy trading applications:', err);
-  //     // Don't set error here as it's a secondary feature
-  //     setCopyTradingApplications([]);
-  //   }
-  // };
-
-  // // Fetch payments
-  // const fetchPayments = async () => {
-  //   try {
-  //     const response = await fetch(`${API_BASE_URL}payments/all`);
-  //     if (!response.ok) {
-  //       throw new Error('Failed to fetch payments');
-  //     }
-  //     const data = await response.json();
-  //     setPayments(Array.isArray(data.payments) ? data.payments : []);
-  //   } catch (err) {
-  //     console.error('Failed to fetch payments:', err);
-  //     setPayments([]);
-  //   }
-  // };
-
-  // Refresh data
+  // Refresh data - FIXED
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      await Promise.all([
-        fetchRegistrations(), 
-        fetchPayments(), 
-        fetchCopyTradingApplications()
-      ]);
+      await fetchRegistrations();
       showNotification('Data refreshed successfully');
     } catch (error) {
       console.error('Refresh failed:', error);
@@ -162,11 +104,12 @@ const AdminDashboard = () => {
     }
   };
 
-  // Update registration status
+  // Update registration status - FIXED API ENDPOINT
   const updateRegistrationStatus = async (registrationId, newStatus) => {
     try {
-      const response = await fetch(`${API_BASE_URL}registration/${registrationId}/status`, {
-        method: 'PATCH',
+      // FIXED: Correct API endpoint with PUT method
+      const response = await fetch(`${API_BASE_URL}api/registration/${registrationId}/status`, {
+        method: 'PUT', // Changed from PATCH to PUT
         headers: {
           'Content-Type': 'application/json',
         },
@@ -174,7 +117,8 @@ const AdminDashboard = () => {
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update status');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to update status');
       }
 
       setRegistrations(prev => 
@@ -188,197 +132,171 @@ const AdminDashboard = () => {
       showNotification(`Status updated to ${newStatus}`);
     } catch (err) {
       console.error('Failed to update status:', err);
-      showNotification('Failed to update status', 'error');
+      showNotification(`Failed to update status: ${err.message}`, 'error');
     }
   };
 
-  // Update copy trading application status - FIXED API ENDPOINT
-  const updateCopyTradingStatus = async (applicationId, newStatus) => {
+  // Delete registration - CORRECT
+  const deleteRegistration = async (registrationId) => {
+    if (!window.confirm('Are you sure you want to delete this registration?')) {
+      return;
+    }
+
     try {
-      // Fixed: Using correct endpoint that matches your routes
-      const response = await fetch(`${API_BASE_URL}api/trading-form/applications/${applicationId}/status`, {
-        method: 'PUT', // Changed from PATCH to PUT to match your routes
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ status: newStatus }),
+      const response = await fetch(`${API_BASE_URL}api/registration/${registrationId}`, {
+        method: 'DELETE',
       });
 
       if (!response.ok) {
-        throw new Error('Failed to update copy trading status');
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || 'Failed to delete registration');
       }
 
-      setCopyTradingApplications(prev => 
-        prev.map(app => 
-          (app.id || app._id) === applicationId 
-            ? { ...app, status: newStatus }
-            : app
-        )
+      setRegistrations(prev =>
+        prev.filter(reg => (reg.id || reg._id) !== registrationId)
       );
-      
-      showNotification(`Copy trading status updated to ${newStatus}`);
+
+      showNotification('Registration deleted successfully');
     } catch (err) {
-      console.error('Failed to update copy trading status:', err);
-      showNotification('Failed to update copy trading status', 'error');
+      console.error('Failed to delete registration:', err);
+      showNotification(`Failed to delete registration: ${err.message}`, 'error');
     }
   };
 
-  // Delete registration
- const deleteRegistration = async (registrationId) => {
-  if (!window.confirm('Are you sure you want to delete this registration?')) {
-    return;
-  }
-
-  try {
-    // Fixed URL - removed 'registration' from the path
-    const response = await fetch(`${API_BASE_URL}api/${registrationId}`, {
-      method: 'DELETE',
-    });
-
-    if (!response.ok) {
-      throw new Error('Failed to delete registration');
-    }
-
-    setRegistrations(prev =>
-      prev.filter(reg => (reg.id || reg._id) !== registrationId)
-    );
-
-    showNotification('Registration deleted successfully');
-  } catch (err) {
-    console.error('Failed to delete registration:', err);
-    showNotification('Failed to delete registration', 'error');
-  }
-};
-
- 
-
-// Download file function - FIXED URL
-const handleDownloadFile = async (itemId, fileType, fileName, isFromCopyTrading = false) => {
-  try {
-    setFileLoading(true);
-    
-    // ✅ CORRECTED: Fixed URL formation
-    const apiUrl = `${API_BASE_URL}api/registration/${itemId}/download/${fileType}`;
-    
-    console.log('📥 Download URL:', apiUrl);
-    
-    const downloadBtn = document.querySelector(`[data-download="${itemId}-${fileType}"]`);
-    if (downloadBtn) {
-      downloadBtn.disabled = true;
-      downloadBtn.textContent = 'Downloading...';
-    }
-    
-    const response = await fetch(apiUrl, {
-      method: 'GET',
-      headers: {
-        'Accept': 'application/octet-stream, application/pdf, image/*',
-      },
-    });
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || `Download failed: HTTP ${response.status}`);
-    }
-    
-    // Get filename from response headers
-    const contentDisposition = response.headers.get('content-disposition');
-    let downloadFileName = fileName;
-    
-    if (contentDisposition) {
-      const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
-      if (fileNameMatch && fileNameMatch[1]) {
-        downloadFileName = fileNameMatch[1].replace(/['"]/g, '');
+  // Download file function - ENHANCED ERROR HANDLING
+  const handleDownloadFile = async (itemId, fileType, fileName) => {
+    try {
+      setFileLoading(true);
+      
+      const apiUrl = `${API_BASE_URL}api/registration/${itemId}/download/${fileType}`;
+      
+      console.log('📥 Download URL:', apiUrl);
+      
+      const downloadBtn = document.querySelector(`[data-download="${itemId}-${fileType}"]`);
+      if (downloadBtn) {
+        downloadBtn.disabled = true;
+        downloadBtn.textContent = 'Downloading...';
       }
+      
+      const response = await fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+          'Accept': 'application/octet-stream, application/pdf, image/*',
+        },
+      });
+      
+      if (!response.ok) {
+        let errorMessage = `Download failed: HTTP ${response.status}`;
+        try {
+          const errorData = await response.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          // If response is not JSON, use default message
+        }
+        throw new Error(errorMessage);
+      }
+      
+      // Get filename from response headers or use fallback
+      let downloadFileName = fileName;
+      const contentDisposition = response.headers.get('content-disposition');
+      
+      if (contentDisposition) {
+        const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
+        if (fileNameMatch && fileNameMatch[1]) {
+          downloadFileName = fileNameMatch[1].replace(/['"]/g, '');
+        }
+      }
+      
+      if (!downloadFileName) {
+        const timestamp = new Date().toISOString().slice(0, 10);
+        downloadFileName = `${fileType}_${itemId}_${timestamp}`;
+      }
+      
+      const blob = await response.blob();
+      
+      if (blob.size === 0) {
+        throw new Error('Downloaded file is empty');
+      }
+      
+      // Create download link
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = downloadFileName;
+      a.style.display = 'none';
+      
+      document.body.appendChild(a);
+      a.click();
+      
+      // Cleanup
+      setTimeout(() => {
+        window.URL.revokeObjectURL(url);
+        document.body.removeChild(a);
+      }, 100);
+      
+      console.log('✅ Download completed:', downloadFileName);
+      showNotification(`File downloaded successfully: ${downloadFileName}`, 'success');
+      
+    } catch (error) {
+      console.error('❌ Download failed:', error);
+      showNotification(`Download failed: ${error.message}`, 'error');
+    } finally {
+      const downloadBtn = document.querySelector(`[data-download="${itemId}-${fileType}"]`);
+      if (downloadBtn) {
+        downloadBtn.disabled = false;
+        downloadBtn.textContent = 'Download';
+      }
+      setFileLoading(false);
     }
-    
-    if (!downloadFileName) {
-      const timestamp = new Date().toISOString().slice(0, 10);
-      downloadFileName = `${fileType}_${itemId}_${timestamp}`;
-    }
-    
-    const blob = await response.blob();
-    
-    if (blob.size === 0) {
-      throw new Error('Downloaded file is empty');
-    }
-    
-    // Create download link
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement('a');
-    a.href = url;
-    a.download = downloadFileName;
-    a.style.display = 'none';
-    
-    document.body.appendChild(a);
-    a.click();
-    
-    // Cleanup
-    setTimeout(() => {
-      window.URL.revokeObjectURL(url);
-      document.body.removeChild(a);
-    }, 100);
-    
-    console.log('✅ Download completed:', downloadFileName);
-    showNotification(`File downloaded successfully: ${downloadFileName}`, 'success');
-    
-  } catch (error) {
-    console.error('❌ Download failed:', error);
-    showNotification(`Download failed: ${error.message}`, 'error');
-  } finally {
-    const downloadBtn = document.querySelector(`[data-download="${itemId}-${fileType}"]`);
-    if (downloadBtn) {
-      downloadBtn.disabled = false;
-      downloadBtn.textContent = 'Download';
-    }
-    setFileLoading(false);
-  }
-};
+  };
 
-// View file function - FIXED URL
-const handleViewFile = async (itemId, fileType, fileName, isFromCopyTrading = false) => {
-  try {
-    setFileLoading(true);
-    
-    // ✅ CORRECTED: Fixed URL formation 
-    const fileUrl = `${API_BASE_URL}api/registration/${itemId}/view/${fileType}`;
-    
-    console.log('👁️ View URL:', fileUrl);
-    
-    // Check if file exists first
-    const response = await fetch(fileUrl, {
-      method: 'HEAD',
-    });
-    
-    if (!response.ok) {
-      const errorResponse = await fetch(fileUrl, { method: 'GET' });
-      const errorData = await errorResponse.json().catch(() => ({}));
-      throw new Error(errorData.message || `File not found: HTTP ${response.status}`);
+  // View file function - ENHANCED ERROR HANDLING
+  const handleViewFile = async (itemId, fileType, fileName) => {
+    try {
+      setFileLoading(true);
+      
+      const fileUrl = `${API_BASE_URL}api/registration/${itemId}/view/${fileType}`;
+      
+      console.log('👁️ View URL:', fileUrl);
+      
+      // Test if file exists and is accessible
+      const response = await fetch(fileUrl, {
+        method: 'HEAD',
+      });
+      
+      if (!response.ok) {
+        let errorMessage = `File not found: HTTP ${response.status}`;
+        try {
+          const errorResponse = await fetch(fileUrl, { method: 'GET' });
+          const errorData = await errorResponse.json();
+          errorMessage = errorData.message || errorMessage;
+        } catch {
+          // If error response is not JSON, use default message
+        }
+        throw new Error(errorMessage);
+      }
+      
+      // Set file URL for modal display
+      setSelectedFile({ 
+        url: fileUrl, 
+        name: fileName || `${fileType}_${itemId}`,
+        type: fileType 
+      });
+      setShowFileModal(true);
+      
+      console.log('✅ File view opened:', fileName);
+      
+    } catch (error) {
+      console.error('❌ View failed:', error);
+      showNotification(`Failed to view file: ${error.message}`, 'error');
+    } finally {
+      setFileLoading(false);
     }
-    
-    // Set file URL for modal display
-    setSelectedFile({ 
-      url: fileUrl, 
-      name: fileName || `${fileType}_${itemId}`,
-      type: fileType 
-    });
-    setShowFileModal(true);
-    
-    console.log('✅ File view opened:', fileName);
-    
-  } catch (error) {
-    console.error('❌ View failed:', error);
-    showNotification(`Failed to view file: ${error.message}`, 'error');
-  } finally {
-    setFileLoading(false);
-  }
-};  
-
+  };
 
   // Initial data fetch
   useEffect(() => {
     fetchRegistrations();
-    // fetchPayments();
-    // fetchCopyTradingApplications();
   }, []);
 
   // Sample courses data
@@ -445,11 +363,6 @@ const handleViewFile = async (itemId, fileType, fileName, isFromCopyTrading = fa
 
   const handleEditRegistration = (registration) => {
     setEditingRegistration(registration);
-    setShowEditRegistration(true);
-  };
-
-  const handleEditCopyTradingApplication = (application) => {
-    setEditingRegistration(application); // Reuse the same modal for simplicity
     setShowEditRegistration(true);
   };
 
@@ -520,22 +433,53 @@ const handleViewFile = async (itemId, fileType, fileName, isFromCopyTrading = fa
     return name.split(' ').map(n => n.charAt(0)).join('').substring(0, 2).toUpperCase();
   };
 
+  // IMPROVED file detection functions
   const hasFiles = (item) => {
     return hasAadharFile(item) || hasSignatureFile(item);
   };
 
   const hasAadharFile = (item) => {
-    return !!(item.aadharFile || item.aadharCard);
+    // Check multiple possible structures for file existence
+    return !!(
+      item.files?.aadharFile?.originalName ||
+      item.files?.aadharFile?.filename ||
+      item.aadharFile?.originalName ||
+      item.aadharFile?.filename ||
+      item.aadharFile ||
+      item.aadharCard
+    );
   };
 
   const hasSignatureFile = (item) => {
-    return !!(item.signatureFile || item.signature);
+    // Check multiple possible structures for file existence
+    return !!(
+      item.files?.signatureFile?.originalName ||
+      item.files?.signatureFile?.filename ||
+      item.signatureFile?.originalName ||
+      item.signatureFile?.filename ||
+      item.signatureFile ||
+      item.signature
+    );
   };
 
-  // Add this function before the render:
+  // Get file name for display
+  const getFileName = (item, fileType) => {
+    if (fileType === 'aadhar') {
+      return item.files?.aadharFile?.originalName ||
+             item.aadharFile?.originalName ||
+             item.aadharFile?.filename ||
+             'Aadhaar Document';
+    } else if (fileType === 'signature') {
+      return item.files?.signatureFile?.originalName ||
+             item.signatureFile?.originalName ||
+             item.signatureFile?.filename ||
+             'Signature Document';
+    }
+    return 'Document';
+  };
+
   const handleItemsPerPageChange = (newItemsPerPage) => {
     setItemsPerPage(newItemsPerPage);
-    // Reset to page 1 when changing items per page
     setRegistrationCurrentPage(1);
     setCourseCurrentPage(1);
     setPaymentCurrentPage(1);
@@ -578,42 +522,13 @@ const handleViewFile = async (itemId, fileType, fileName, isFromCopyTrading = fa
             hasFiles={hasFiles}
             hasAadharFile={hasAadharFile}
             hasSignatureFile={hasSignatureFile}
+            getFileName={getFileName}
             fileLoading={fileLoading}
             getStatusColor={getStatusColor}
             currentPage={registrationCurrentPage}
             setCurrentPage={setRegistrationCurrentPage}
             itemsPerPage={itemsPerPage}
             onItemsPerPageChange={handleItemsPerPageChange}
-          />
-        );
-      // FIXED: Changed from 'copy-trading' to 'Copy Trading' to match sidebar ID
-      case 'Copy Trading':
-        return (
-          <CopyTradingTab
-            filteredApplications={filteredCopyTradingApplications}
-            loading={loading}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            selectedStatus={selectedStatus}
-            setSelectedStatus={setSelectedStatus}
-            updateApplicationStatus={updateCopyTradingStatus}
-            deleteApplication={deleteCopyTradingApplication}
-            handleEditApplication={handleEditCopyTradingApplication}
-            handleViewFile={(id, type, name) => handleViewFile(id, type, name, true)}
-            handleDownloadFile={(id, type, name) => handleDownloadFile(id, type, name, true)}
-            formatDate={formatDate}
-            formatCurrency={formatCurrency}
-            calculateAge={calculateAge}
-            getStudentName={getStudentName}
-            getStudentInitials={getStudentInitials}
-            hasFiles={hasFiles}
-            hasAadharFile={hasAadharFile}
-            hasSignatureFile={hasSignatureFile}
-            fileLoading={fileLoading}
-            getStatusColor={getStatusColor}
-            currentPage={copyTradingCurrentPage}
-            setCurrentPage={setCopyTradingCurrentPage}
-            itemsPerPage={itemsPerPage}
           />
         );
       case 'courses':
@@ -624,22 +539,6 @@ const handleViewFile = async (itemId, fileType, fileName, isFromCopyTrading = fa
             getStatusColor={getStatusColor}
             currentPage={courseCurrentPage}
             setCurrentPage={setCourseCurrentPage}
-            itemsPerPage={itemsPerPage}
-          />
-        );
-      case 'payments':
-        return (
-          <PaymentsTab
-            payments={payments}
-            filteredPayments={filteredPayments}
-            searchTerm={searchTerm}
-            setSearchTerm={setSearchTerm}
-            selectedStatus={selectedStatus}
-            setSelectedStatus={setSelectedStatus}
-            getPaymentStatusColor={getPaymentStatusColor}
-            formatDate={formatDate}
-            currentPage={paymentCurrentPage}
-            setCurrentPage={setPaymentCurrentPage}
             itemsPerPage={itemsPerPage}
           />
         );
@@ -665,7 +564,7 @@ const handleViewFile = async (itemId, fileType, fileName, isFromCopyTrading = fa
           setActiveTab={setActiveTab}
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
-          stats={stats} // Pass stats to show counts in sidebar
+          stats={stats}
         />
 
         {/* Main Content */}
