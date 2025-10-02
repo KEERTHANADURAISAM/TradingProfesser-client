@@ -396,8 +396,8 @@ const TradingRegistrationForm = () => {
         }
       }
 
-      const API_BASE_URL = 'http://localhost:5000/';
-      // const API_BASE_URL = 'https://tradingprofesser-server-deploy.onrender.com/'
+      // const API_BASE_URL = 'http://localhost:5000/';
+      const API_BASE_URL = 'https://trading-backend-9taq.onrender.com/'
       
       const response = await fetch(`${API_BASE_URL}api/registration/register`, {
         method: 'POST',

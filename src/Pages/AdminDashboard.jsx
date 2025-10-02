@@ -1,5 +1,6 @@
+
 import React, { useState, useEffect } from 'react';
-import { 
+import {
   AlertCircle,
 } from 'lucide-react';
 import TopNavbar from './TopNavbar';
@@ -42,7 +43,7 @@ const AdminDashboard = () => {
   const [copyTradingCurrentPage, setCopyTradingCurrentPage] = useState(1);
 
   // API Base URL
-  const API_BASE_URL = 'http://localhost:5000/';
+  const API_BASE_URL = 'https://trading-backend-9taq.onrender.com/';
 
   // Show notification
   const showNotification = (message, type = 'success') => {
@@ -55,15 +56,15 @@ const AdminDashboard = () => {
     setLoading(true);
     try {
       console.log('Fetching from API:', `${API_BASE_URL}api/registration/all`);
-      
+
       const response = await fetch(`${API_BASE_URL}api/registration/all`);
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`);
       }
       const data = await response.json();
-      
+
       console.log('Raw API Response:', data);
-      
+
       // Handle different possible response structures
       let registrationData = [];
       if (data.registrations && Array.isArray(data.registrations)) {
@@ -75,10 +76,10 @@ const AdminDashboard = () => {
       } else if (data.data && data.data.registrations && Array.isArray(data.data.registrations)) {
         registrationData = data.data.registrations;
       }
-      
+
       console.log('Processed Registration Data:', registrationData);
       console.log('Total count from API:', registrationData.length);
-      
+
       setRegistrations(registrationData);
       setError(null);
     } catch (err) {
@@ -121,14 +122,14 @@ const AdminDashboard = () => {
         throw new Error(errorData.message || 'Failed to update status');
       }
 
-      setRegistrations(prev => 
-        prev.map(reg => 
-          (reg.id || reg._id) === registrationId 
+      setRegistrations(prev =>
+        prev.map(reg =>
+          (reg.id || reg._id) === registrationId
             ? { ...reg, status: newStatus }
             : reg
         )
       );
-      
+
       showNotification(`Status updated to ${newStatus}`);
     } catch (err) {
       console.error('Failed to update status:', err);
@@ -167,24 +168,24 @@ const AdminDashboard = () => {
   const handleDownloadFile = async (itemId, fileType, fileName) => {
     try {
       setFileLoading(true);
-      
+
       const apiUrl = `${API_BASE_URL}api/registration/${itemId}/download/${fileType}`;
-      
+
       console.log('📥 Download URL:', apiUrl);
-      
+
       const downloadBtn = document.querySelector(`[data-download="${itemId}-${fileType}"]`);
       if (downloadBtn) {
         downloadBtn.disabled = true;
         downloadBtn.textContent = 'Downloading...';
       }
-      
+
       const response = await fetch(apiUrl, {
         method: 'GET',
         headers: {
           'Accept': 'application/octet-stream, application/pdf, image/*',
         },
       });
-      
+
       if (!response.ok) {
         let errorMessage = `Download failed: HTTP ${response.status}`;
         try {
@@ -195,48 +196,48 @@ const AdminDashboard = () => {
         }
         throw new Error(errorMessage);
       }
-      
+
       // Get filename from response headers or use fallback
       let downloadFileName = fileName;
       const contentDisposition = response.headers.get('content-disposition');
-      
+
       if (contentDisposition) {
         const fileNameMatch = contentDisposition.match(/filename[^;=\n]*=((['"]).*?\2|[^;\n]*)/);
         if (fileNameMatch && fileNameMatch[1]) {
           downloadFileName = fileNameMatch[1].replace(/['"]/g, '');
         }
       }
-      
+
       if (!downloadFileName) {
         const timestamp = new Date().toISOString().slice(0, 10);
         downloadFileName = `${fileType}_${itemId}_${timestamp}`;
       }
-      
+
       const blob = await response.blob();
-      
+
       if (blob.size === 0) {
         throw new Error('Downloaded file is empty');
       }
-      
+
       // Create download link
       const url = window.URL.createObjectURL(blob);
       const a = document.createElement('a');
       a.href = url;
       a.download = downloadFileName;
       a.style.display = 'none';
-      
+
       document.body.appendChild(a);
       a.click();
-      
+
       // Cleanup
       setTimeout(() => {
         window.URL.revokeObjectURL(url);
         document.body.removeChild(a);
       }, 100);
-      
+
       console.log('✅ Download completed:', downloadFileName);
       showNotification(`File downloaded successfully: ${downloadFileName}`, 'success');
-      
+
     } catch (error) {
       console.error('❌ Download failed:', error);
       showNotification(`Download failed: ${error.message}`, 'error');
@@ -254,45 +255,36 @@ const AdminDashboard = () => {
   const handleViewFile = async (itemId, fileType, fileName) => {
     try {
       setFileLoading(true);
-      
-      const fileUrl = `${API_BASE_URL}api/registration/${itemId}/view/${fileType}`;
-      
-      console.log('👁️ View URL:', fileUrl);
-      
-      // Test if file exists and is accessible
-      const response = await fetch(fileUrl, {
-        method: 'HEAD',
-      });
-      
+
+      const apiUrl = `${API_BASE_URL}api/registration/${itemId}/view/${fileType}`;
+      console.log("👁️ API URL:", apiUrl);
+
+      // Fetch JSON that contains fileUrl
+      const response = await fetch(apiUrl);
       if (!response.ok) {
-        let errorMessage = `File not found: HTTP ${response.status}`;
-        try {
-          const errorResponse = await fetch(fileUrl, { method: 'GET' });
-          const errorData = await errorResponse.json();
-          errorMessage = errorData.message || errorMessage;
-        } catch {
-          // If error response is not JSON, use default message
-        }
-        throw new Error(errorMessage);
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || `File not found: HTTP ${response.status}`);
       }
-      
+
+      const data = await response.json();
+
       // Set file URL for modal display
-      setSelectedFile({ 
-        url: fileUrl, 
+      setSelectedFile({
+        url: data.fileUrl,
         name: fileName || `${fileType}_${itemId}`,
-        type: fileType 
+        type: fileType,
       });
       setShowFileModal(true);
-      
-      console.log('✅ File view opened:', fileName);
-      
+
+      console.log("✅ File view opened:", data.fileUrl);
     } catch (error) {
-      console.error('❌ View failed:', error);
-      showNotification(`Failed to view file: ${error.message}`, 'error');
+      console.error("❌ View failed:", error);
+      showNotification(`Failed to view file: ${error.message}`, "error");
     } finally {
       setFileLoading(false);
     }
   };
+
 
   // Initial data fetch
   useEffect(() => {
@@ -321,10 +313,10 @@ const AdminDashboard = () => {
   const filteredRegistrations = registrations.filter(reg => {
     if (!reg) return false;
     const searchFields = [
-      reg.firstName, reg.lastName, reg.name, reg.email, 
+      reg.firstName, reg.lastName, reg.name, reg.email,
       reg.phone, reg.courseName, reg.course
     ].filter(Boolean).join(' ').toLowerCase();
-    
+
     const matchesSearch = searchFields.includes(searchTerm.toLowerCase());
     const matchesStatus = selectedStatus === 'all' || reg.status === selectedStatus;
     return matchesSearch && matchesStatus;
@@ -333,10 +325,10 @@ const AdminDashboard = () => {
   const filteredCopyTradingApplications = copyTradingApplications.filter(app => {
     if (!app) return false;
     const searchFields = [
-      app.firstName, app.lastName, app.name, app.email, 
+      app.firstName, app.lastName, app.name, app.email,
       app.phone, app.investmentAmount, app.investmentGoals
     ].filter(Boolean).join(' ').toLowerCase();
-    
+
     const matchesSearch = searchFields.includes(searchTerm.toLowerCase());
     const matchesStatus = selectedStatus === 'all' || app.status === selectedStatus;
     return matchesSearch && matchesStatus;
@@ -345,7 +337,7 @@ const AdminDashboard = () => {
   const filteredPayments = payments.filter(payment => {
     if (!payment) return false;
     return (payment.name?.toLowerCase() || '').includes(searchTerm.toLowerCase()) ||
-           (payment.email?.toLowerCase() || '').includes(searchTerm.toLowerCase());
+      (payment.email?.toLowerCase() || '').includes(searchTerm.toLowerCase());
   });
 
   // Handler functions
@@ -368,7 +360,7 @@ const AdminDashboard = () => {
 
   // Utility functions
   const getStatusColor = (status) => {
-    switch(status) {
+    switch (status) {
       case 'active': return 'bg-green-100 text-green-800';
       case 'pending': return 'bg-yellow-100 text-yellow-800';
       case 'completed': return 'bg-blue-100 text-blue-800';
@@ -384,7 +376,7 @@ const AdminDashboard = () => {
   };
 
   const getPaymentStatusColor = (status) => {
-    switch(status?.toLowerCase()) {
+    switch (status?.toLowerCase()) {
       case 'success':
       case 'completed':
       case 'paid': return 'bg-green-100 text-green-800';
@@ -466,14 +458,14 @@ const AdminDashboard = () => {
   const getFileName = (item, fileType) => {
     if (fileType === 'aadhar') {
       return item.files?.aadharFile?.originalName ||
-             item.aadharFile?.originalName ||
-             item.aadharFile?.filename ||
-             'Aadhaar Document';
+        item.aadharFile?.originalName ||
+        item.aadharFile?.filename ||
+        'Aadhaar Document';
     } else if (fileType === 'signature') {
       return item.files?.signatureFile?.originalName ||
-             item.signatureFile?.originalName ||
-             item.signatureFile?.filename ||
-             'Signature Document';
+        item.signatureFile?.originalName ||
+        item.signatureFile?.filename ||
+        'Signature Document';
     }
     return 'Document';
   };
@@ -491,7 +483,7 @@ const AdminDashboard = () => {
     switch (activeTab) {
       case 'overview':
         return (
-          <OverviewTab 
+          <OverviewTab
             stats={stats}
             registrations={registrations}
             copyTradingApplications={copyTradingApplications}
@@ -551,7 +543,7 @@ const AdminDashboard = () => {
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-gray-800 to-gray-900">
       <div className="relative z-10">
         {/* Top Navigation */}
-        <TopNavbar 
+        <TopNavbar
           sidebarOpen={sidebarOpen}
           setSidebarOpen={setSidebarOpen}
           handleRefresh={handleRefresh}
@@ -578,13 +570,13 @@ const AdminDashboard = () => {
                 </div>
               </div>
             )}
-            
+
             {renderContent()}
           </div>
         </div>
 
         {/* Modals */}
-        <EditCourseModal 
+        <EditCourseModal
           showEditModal={showEditModal}
           setShowEditModal={setShowEditModal}
           editingCourse={editingCourse}
@@ -592,7 +584,7 @@ const AdminDashboard = () => {
           handleSaveCourse={handleSaveCourse}
         />
 
-        <EditRegistrationModal 
+        <EditRegistrationModal
           showEditRegistration={showEditRegistration}
           setShowEditRegistration={setShowEditRegistration}
           editingRegistration={editingRegistration}
@@ -607,7 +599,7 @@ const AdminDashboard = () => {
           showNotification={showNotification}
         />
 
-        <FileViewModal 
+        <FileViewModal
           showFileModal={showFileModal}
           selectedFile={selectedFile}
           setShowFileModal={setShowFileModal}
@@ -619,7 +611,7 @@ const AdminDashboard = () => {
 
         {/* Mobile sidebar overlay */}
         {sidebarOpen && (
-          <div 
+          <div
             className="fixed inset-0 bg-black/50 z-30 lg:hidden"
             onClick={() => setSidebarOpen(false)}
           />
