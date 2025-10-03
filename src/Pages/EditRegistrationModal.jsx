@@ -7,7 +7,7 @@ import {
 const EditRegistrationModal = ({ 
   showEditRegistration, setShowEditRegistration, editingRegistration, setEditingRegistration,
   hasFiles, handleViewFile, handleDownloadFile, formatDate, deleteRegistration,
-  setRegistrations, showNotification, API_BASE_URL
+  setRegistrations, showNotification,
 }) => {
   const [saving, setSaving] = useState(false);
 
@@ -30,6 +30,7 @@ const EditRegistrationModal = ({
 
       console.log('💾 Saving registration:', registrationId, updateData);
 
+  const API_BASE_URL = 'https://trading-backend-9taq.onrender.com/';
       // Call backend API to update
       const response = await fetch(`${API_BASE_URL}api/registration/${registrationId}`, {
         method: 'PUT',
