@@ -82,8 +82,9 @@ const RegistrationsTab = ({
           >
             <option value="all">All Status</option>
             <option value="pending">Pending</option>
-            <option value="active">Active</option>
-            <option value="completed">Completed</option>
+            <option value="approved">Approved</option>
+            <option value="rejected">Rejected</option>
+            <option value="under_review">Under Review</option>
           </select>
         </div>
         
@@ -156,7 +157,7 @@ const RegistrationsTab = ({
                 <tbody className="divide-y divide-white/10">
                   {paginatedRegistrations.map((reg, index) => {
                     const registrationId = reg.id || reg._id;
-                    const globalIndex = startIndex + index + 1; // For debugging
+                    const globalIndex = startIndex + index + 1;
                     return (
                       <tr key={registrationId || `reg-${index}`} className="hover:bg-white/5 transition-colors">
                         <td className="px-6 py-4 whitespace-nowrap">
@@ -199,8 +200,9 @@ const RegistrationsTab = ({
                             className={`text-xs font-medium px-3 py-1 rounded-full border-0 focus:outline-none focus:ring-2 focus:ring-purple-400 ${getStatusColor(reg.status || 'pending')}`}
                           >
                             <option value="pending">Pending</option>
-                            <option value="active">Active</option>
-                            <option value="completed">Completed</option>
+                            <option value="approved">Approved</option>
+                            <option value="rejected">Rejected</option>
+                            <option value="under_review">Under Review</option>
                           </select>
                         </td>
                         
