@@ -512,7 +512,7 @@ const renderNameWithHighlightedFree = (name) => {
                 </svg>
                 <div>
                   <span className="text-white font-medium text-xs sm:text-sm lg:text-base block mb-1">
-                    1 Month Premium TP Group Access
+                    6 Month Premium TP Group Access
                   </span>
                   <span className="text-gray-400 text-xs">Exclusive trading community</span>
                 </div>
