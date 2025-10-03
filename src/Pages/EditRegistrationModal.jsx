@@ -1,33 +1,69 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { 
-  Eye, Download,X, 
-
+  Eye, Download, X, Loader2
 } from 'lucide-react';
-
-
-
-
-
 
 // Edit Registration Modal
 const EditRegistrationModal = ({ 
   showEditRegistration, setShowEditRegistration, editingRegistration, setEditingRegistration,
-  hasFiles, handleViewFile, handleDownloadFile, getStudentName, formatDate, deleteRegistration,
-  setRegistrations, showNotification
+  hasFiles, handleViewFile, handleDownloadFile, formatDate, deleteRegistration,
+  setRegistrations, showNotification, API_BASE_URL
 }) => {
+  const [saving, setSaving] = useState(false);
+
   if (!showEditRegistration || !editingRegistration) return null;
 
-  const handleSaveRegistration = () => {
-    setRegistrations(prev => 
-      prev.map(reg => 
-        (reg.id || reg._id) === (editingRegistration.id || editingRegistration._id) 
-          ? editingRegistration 
-          : reg
-      )
-    );
-    setShowEditRegistration(false);
-    showNotification('Registration updated successfully');
+  const handleSaveRegistration = async () => {
+    try {
+      setSaving(true);
+      const registrationId = editingRegistration.id || editingRegistration._id;
+
+      // Prepare update data
+      const updateData = {
+        firstName: editingRegistration.firstName,
+        lastName: editingRegistration.lastName,
+        email: editingRegistration.email,
+        phone: editingRegistration.phone,
+        courseName: editingRegistration.courseName || editingRegistration.course,
+        status: editingRegistration.status
+      };
+
+      console.log('💾 Saving registration:', registrationId, updateData);
+
+      // Call backend API to update
+      const response = await fetch(`${API_BASE_URL}api/registration/${registrationId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(updateData)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => null);
+        throw new Error(errorData?.message || `Update failed: HTTP ${response.status}`);
+      }
+
+      const result = await response.json();
+      console.log('✅ Registration updated:', result);
+
+      // Update local state with response data
+      setRegistrations(prev => 
+        prev.map(reg => 
+          (reg.id || reg._id) === registrationId 
+            ? { ...reg, ...result.data }
+            : reg
+        )
+      );
+
+      setShowEditRegistration(false);
+      showNotification('Registration updated successfully', 'success');
+    } catch (error) {
+      console.error('❌ Save failed:', error);
+      showNotification(`Failed to update: ${error.message}`, 'error');
+    } finally {
+      setSaving(false);
+    }
   };
 
   return (
@@ -38,6 +74,7 @@ const EditRegistrationModal = ({
           <button
             onClick={() => setShowEditRegistration(false)}
             className="text-white/70 hover:text-white"
+            disabled={saving}
           >
             <X className="h-5 w-5" />
           </button>
@@ -51,6 +88,7 @@ const EditRegistrationModal = ({
               value={editingRegistration.firstName || ''}
               onChange={(e) => setEditingRegistration({...editingRegistration, firstName: e.target.value})}
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              disabled={saving}
             />
           </div>
           
@@ -61,6 +99,7 @@ const EditRegistrationModal = ({
               value={editingRegistration.lastName || ''}
               onChange={(e) => setEditingRegistration({...editingRegistration, lastName: e.target.value})}
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              disabled={saving}
             />
           </div>
           
@@ -71,6 +110,7 @@ const EditRegistrationModal = ({
               value={editingRegistration.email || ''}
               onChange={(e) => setEditingRegistration({...editingRegistration, email: e.target.value})}
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              disabled={saving}
             />
           </div>
           
@@ -81,6 +121,7 @@ const EditRegistrationModal = ({
               value={editingRegistration.phone || ''}
               onChange={(e) => setEditingRegistration({...editingRegistration, phone: e.target.value})}
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              disabled={saving}
             />
           </div>
           
@@ -91,6 +132,7 @@ const EditRegistrationModal = ({
               value={editingRegistration.courseName || editingRegistration.course || ''}
               onChange={(e) => setEditingRegistration({...editingRegistration, courseName: e.target.value})}
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              disabled={saving}
             />
           </div>
           
@@ -100,10 +142,12 @@ const EditRegistrationModal = ({
               value={editingRegistration.status || 'pending'}
               onChange={(e) => setEditingRegistration({...editingRegistration, status: e.target.value})}
               className="w-full px-3 py-2 bg-white/10 border border-white/20 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-purple-500"
+              disabled={saving}
             >
               <option value="pending">Pending</option>
-              <option value="active">Active</option>
-              <option value="completed">Completed</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+              <option value="under_review">Under Review</option>
             </select>
           </div>
           
@@ -204,7 +248,8 @@ const EditRegistrationModal = ({
                 setShowEditRegistration(false);
               }
             }}
-            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors"
+            className="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors disabled:opacity-50"
+            disabled={saving}
           >
             Delete Registration
           </button>
@@ -212,15 +257,24 @@ const EditRegistrationModal = ({
           <div className="flex space-x-3">
             <button
               onClick={() => setShowEditRegistration(false)}
-              className="px-4 py-2 text-white/70 hover:text-white transition-colors"
+              className="px-4 py-2 text-white/70 hover:text-white transition-colors disabled:opacity-50"
+              disabled={saving}
             >
               Cancel
             </button>
             <button
               onClick={handleSaveRegistration}
-              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors"
+              className="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg transition-colors disabled:opacity-50 flex items-center gap-2"
+              disabled={saving}
             >
-              Save Changes
+              {saving ? (
+                <>
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                  Saving...
+                </>
+              ) : (
+                'Save Changes'
+              )}
             </button>
           </div>
         </div>
