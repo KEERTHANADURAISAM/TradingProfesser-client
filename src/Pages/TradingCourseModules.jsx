@@ -70,7 +70,7 @@ const handleEnroll = (course) => {
         "Greeks Understanding",
         ],
       bonuses: [
-        "1 Month TP Premium Group Access",
+        "6 Month TP Premium Group Access",
         "Live Sessions",
         "Invite a Friend, Unlock 1 Month of TP Premium Group Access – On Us!"
       ]
@@ -195,7 +195,7 @@ const handleEnroll = (course) => {
       "Change Of Mindset"
     ],
     features: [
-      "1 Month Premium TP Group Access",
+      "6 Month Premium TP Group Access",
       "Live sessions - 1 MONTH",
       "Advanced Trend Analysis Software Paid Version",
       "Free Combination Website Paid Version",
