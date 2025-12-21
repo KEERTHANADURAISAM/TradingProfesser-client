@@ -14,6 +14,7 @@ import {
   Shield
 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import PrivacyPolicy from './PrivacyPolicy';
 
 const TradingCourseModules = () => {
  
@@ -667,6 +668,7 @@ const renderNameWithHighlightedFree = (name) => {
             <strong>Disclaimer:</strong> Our Investors Are The Most Important person To Us... However The Strategies, Material , Discussions In This Trading Class Are Provided Solely Educational And Informational Purposes Only. They should not be interpreted as investment, trading, or financial advice, nor as recommendations to buy or sell any financial instrument.Trading and investing And Portfolio Management Services (PMS) in the Stock market involve substantial risk, including the possible loss of principal. Past performance, strategies, or demonstrations discussed in this class may not be indicative of future results. Every participant is responsible for their own financial decisions and should consult with a qualified financial advisor before engaging in any trading or investment activity.The instructors and organizers of this class are not licensed financial advisors and expressly disclaim any liability for any losses or damages incurred as a result of the information shared herein. Participation in this class does not create a client relationship with the instructors or the organization.By participating in this class, you acknowledge and accept these terms.
           </p>
         </div>
+        <PrivacyPolicy/>
       </div>
     </div>
   );
