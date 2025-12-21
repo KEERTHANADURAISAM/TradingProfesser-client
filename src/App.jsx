@@ -11,6 +11,7 @@ import Footer from "./Pages/Footer";
 import AnimatedBackground from "./Pages/AnimatedGridBackground";
 import Payment from "./Pages/Payment";
 import CopyTradingForm from "./Pages/CopyTradingForm";
+import PrivacyPolicy from "./Pages/PrivacyPolicy";
 
 function Layout({ children }) {
   const location = useLocation();
@@ -43,6 +44,7 @@ function App() {
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/register" element={<TradingRegistrationForm />} />
             <Route path="/copy&trading" element={<CopyTradingForm/>} />
+            <Route path="/privacypolicy" element={<PrivacyPolicy/>} />
             <Route path="/payment" element={<Payment />} />
             <Route path="*" element={<Navigate to="/" />} />
           </Routes>

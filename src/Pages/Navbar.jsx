@@ -10,6 +10,7 @@ const Navbar = () => {
     { name: 'About', path: '/about' },
     { name: 'Course', path: '/course' },
     { name: 'Track Record', path: '/p&lrecords' },
+    {name:'Privacy Policy',path:'/privacypolicy'}
     // { name: 'Copy Trading Investment', path: '/copy&trading' },
   ];
 
