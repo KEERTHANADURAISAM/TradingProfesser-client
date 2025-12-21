@@ -603,7 +603,7 @@ const renderNameWithHighlightedFree = (name) => {
               </div> 
             </div>         
             <div className="flex flex-col items-center space-y-2 text-gray-300">   
-              <p><strong>Dates:</strong>   NOVEMBER - 24, 25, 26 </p>   
+              <p><strong>Dates:</strong>   December - 22, 23, 24 </p>   
               <p><strong>Duration:</strong> 3 Days</p>   
               <p><strong>Timing:</strong> 2.5 Hours per Day</p>   
               <p><strong>Mode:</strong> Live Online Sessions</p> 
