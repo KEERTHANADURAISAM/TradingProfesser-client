@@ -18,7 +18,7 @@ const About = () => {
           {/* Left Column: Profile + Text */}
           <div className="space-y-6">
              <div className="text-white text-center md:text-left">
-              <h3 className="text-2xl font-bold mb-4 text-blue-400">TRADING PROFESSOR</h3>
+              <h3 className="text-2xl font-bold mb-4 text-blue-400">MUTHUVEL OFFICIAL</h3>
               <p className="text-gray-300 leading-relaxed">
                 I'm a full-time trader with a passion for financial markets and a strong focus on consistency, risk management, and data-driven strategies. With over 5 years of hands-on experience in trading stocks, forex, and crypto, I help others grow their capital through smart portfolio management and copy trading services. I believe in transparency, discipline, and continuous learning—traits that define every trade I take. Whether you're a beginner looking to learn or an investor wanting passive returns, I’m here to guide you toward smarter trading decisions.
               </p>

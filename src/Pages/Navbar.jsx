@@ -20,7 +20,7 @@ const Navbar = () => {
         
         {/* Logo */}
         <div className="flex items-center">
-          <img src="/T.png" alt="Logo" className="h-24 object-contain" />
+          <img src="/logo1.png" alt="Logo" className="h-24 object-contain" />
         </div>
         {/* Desktop Menu */}
         <div className="hidden md:flex space-x-10">

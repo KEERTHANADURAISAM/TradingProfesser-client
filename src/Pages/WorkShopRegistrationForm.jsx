@@ -528,7 +528,7 @@ const TradingRegistrationForm = () => {
           {/* Header */}
           <div className="text-center mb-12">
             <h1 className="text-4xl font-bold text-white mb-2">
-              Trading Professor Course 
+              Muthuvel Official Course 
             </h1>
             <p className="text-blue-300 text-lg">Registration Form</p>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-500 to-purple-500 mx-auto mt-4 rounded-full"></div>

@@ -32,7 +32,7 @@ const PrivacyPolicy = () => {
               <h2 className="text-2xl font-bold text-white">Introduction</h2>
             </div>
             <p className="text-gray-300 leading-relaxed">
-              Welcome to Trading Professor. We respect your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you visit our website.
+              Welcome to Muthuvel Official. We respect your privacy and are committed to protecting your personal information. This Privacy Policy explains how we collect, use, and safeguard your data when you visit our website.
             </p>
           </section>
 
@@ -158,7 +158,7 @@ const PrivacyPolicy = () => {
                     STRICTLY FOR EDUCATIONAL PURPOSES ONLY
                   </p>
                   <p>
-                    <strong>Trading Professor</strong> provides educational content and information about trading and financial markets. We do NOT provide financial advice, investment recommendations, or trading signals.
+                    <strong>Muthuvel Official</strong> provides educational content and information about trading and financial markets. We do NOT provide financial advice, investment recommendations, or trading signals.
                   </p>
                   <p>
                     All strategies, materials, and discussions in our courses are provided solely for <strong>educational and informational purposes</strong>. They should not be interpreted as investment, trading, or financial advice.
@@ -237,7 +237,7 @@ const PrivacyPolicy = () => {
         {/* Footer Note */}
         <div className="mt-8 text-center">
           <p className="text-gray-400 text-sm">
-            By using Trading Professor, you acknowledge that you have read and understood this Privacy Policy.
+            By using Muthuvel Official, you acknowledge that you have read and understood this Privacy Policy.
           </p>
         </div>
       </div>
