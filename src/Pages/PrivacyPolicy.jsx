@@ -158,7 +158,7 @@ const PrivacyPolicy = () => {
                     STRICTLY FOR EDUCATIONAL PURPOSES ONLY
                   </p>
                   <p>
-                    <strong>Muthuvel Official</strong> provides educational content and information about trading and financial markets. We do NOT provide financial advice, investment recommendations, or trading signals.
+                    <strong>Trading Professor</strong> provides educational content and information about trading and financial markets. We do NOT provide financial advice, investment recommendations, or trading signals.
                   </p>
                   <p>
                     All strategies, materials, and discussions in our courses are provided solely for <strong>educational and informational purposes</strong>. They should not be interpreted as investment, trading, or financial advice.
@@ -210,7 +210,7 @@ const PrivacyPolicy = () => {
             </p>
             <div className="space-y-2 text-sm">
               <p className="text-gray-300">
-                <strong className="text-blue-300">Website:</strong> https://muthuvelofficial.in
+                <strong className="text-blue-300">Website:</strong>https://muthuvelofficial.in
               </p>
               <p className="text-gray-300">
                 <strong className="text-blue-300">WhatsApp:</strong> +91 9363238386
@@ -237,7 +237,7 @@ const PrivacyPolicy = () => {
         {/* Footer Note */}
         <div className="mt-8 text-center">
           <p className="text-gray-400 text-sm">
-            By using Muthuvel Official, you acknowledge that you have read and understood this Privacy Policy.
+            By using Trading Professor, you acknowledge that you have read and understood this Privacy Policy.
           </p>
         </div>
       </div>

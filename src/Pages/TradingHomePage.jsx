@@ -63,7 +63,7 @@ const TradingHomePage = () => {
 
               <p className="text-xl text-gray-300 leading-relaxed max-w-lg">
                 Learn the <strong className="text-purple-400">"Formation and Timing"</strong> secret formula
-                from Muthuvel Official. Transform your trading journey with our proven strategies
+                from Trading Professor. Transform your trading journey with our proven strategies
                 and achieve <strong className="text-blue-400">consistent profits</strong>.
               </p>
             </div>

@@ -31,7 +31,7 @@ const handleEnroll = (course) => {
 // watsapp
 
  const whatsappNumber = "919363238386";
-  const message = "Hi Muthuvel Official! I'm interested in learning about your trading course and would like to know more about your trading learning approach. Could you please share the details?";
+  const message = "Hi Trading Professor! I'm interested in learning about your trading course and would like to know more about your trading learning approach. Could you please share the details?";
   const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
   const [expandedTopics, setExpandedTopics] = useState({}); // track per phase
@@ -224,7 +224,7 @@ const renderNameWithHighlightedFree = (name) => {
         <div className="text-center mb-16">
           <div className="inline-flex items-center space-x-2 bg-blue-600/20 backdrop-blur-sm border border-blue-500/30 rounded-full px-6 py-2 mb-6">
             <Award className="w-5 h-5 text-blue-400" />
-            <span className="text-blue-300 font-semibold">Muthuvel Official Courses</span>
+            <span className="text-blue-300 font-semibold">Trading Professor Courses</span>
           </div>
           
           <h1 className="text-5xl lg:text-6xl font-bold text-white mb-6">
