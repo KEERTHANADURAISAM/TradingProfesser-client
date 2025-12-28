@@ -210,7 +210,7 @@ const PrivacyPolicy = () => {
             </p>
             <div className="space-y-2 text-sm">
               <p className="text-gray-300">
-                <strong className="text-blue-300">Website:</strong> https://tradingprofessor.netlify.app/
+                <strong className="text-blue-300">Website:</strong> https://muthuvelofficial.in
               </p>
               <p className="text-gray-300">
                 <strong className="text-blue-300">WhatsApp:</strong> +91 9363238386
