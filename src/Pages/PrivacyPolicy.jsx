@@ -158,7 +158,7 @@ const PrivacyPolicy = () => {
                     STRICTLY FOR EDUCATIONAL PURPOSES ONLY
                   </p>
                   <p>
-                    <strong>Trading Professor</strong> provides educational content and information about trading and financial markets. We do NOT provide financial advice, investment recommendations, or trading signals.
+                    <strong>Muthuvel Official</strong> provides educational content and information about trading and financial markets. We do NOT provide financial advice, investment recommendations, or trading signals.
                   </p>
                   <p>
                     All strategies, materials, and discussions in our courses are provided solely for <strong>educational and informational purposes</strong>. They should not be interpreted as investment, trading, or financial advice.

@@ -397,9 +397,12 @@ const TradingRegistrationForm = () => {
       }
 
       // const API_BASE_URL = 'http://localhost:5000/';
-      const API_BASE_URL = 'https://trading-backend-amber.vercel.app/'
+    // Check if running locally or production
+const API_URL = window.location.hostname === 'localhost' 
+  ? 'http://localhost:5000/api'  // Local development
+  : 'http://muthuvelofficial.in:5000/api';  // Production
       
-      const response = await fetch(`${API_BASE_URL}api/registration/register`, {
+      const response = await fetch(`${API_URL}/registration/register`,  {
         method: 'POST',
         body: formDataToSend,
         // Don't set Content-Type header - let browser set it with boundary
